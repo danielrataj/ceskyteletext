@@ -169,17 +169,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             teletextPages: pages, selectedPage: selectedPage),
                       ));
 
-                      elementsToPaint.add(Container(
-                        color: Colors.blue,
-                        child: SizedBox(
-                          height: scaffoldBodyHeight, // just make sure it is a bit smaller
+                      elementsToPaint.add(
+                        SizedBox(
+                          height:
+                              scaffoldBodyHeight, // just make sure it is a bit smaller
                           child: elements.SimpleKeyboard(
-                            teletextPages: pages,
-                            selectedPage: selectedPage,
-                            containerHeight: scaffoldBodyHeight
-                          ),
+                              teletextPages: pages,
+                              selectedPage: selectedPage,
+                              containerHeight: scaffoldBodyHeight),
                         ),
-                      ));
+                      );
                     }
 
                     return Column(
