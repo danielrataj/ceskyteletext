@@ -1,5 +1,7 @@
 import 'package:ceskyteletext/pages/favorites.dart';
 import 'package:ceskyteletext/pages/homepage.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:global_snack_bar/global_snack_bar.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -14,7 +16,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const MyApp()
+    ),
+  );
 }
 
 
@@ -33,7 +40,10 @@ class MyApp extends StatelessWidget {
         return ChangeNotifierProvider(
             create: (context) => model.AppState()..initiate(),
             child: MaterialApp(
-              debugShowCheckedModeBanner: false,
+              debugShowCheckedModeBanner: !kReleaseMode,
+              useInheritedMediaQuery: true,
+              locale: DevicePreview.locale(context),
+              builder: DevicePreview.appBuilder,
               title: title,
               theme: FlexThemeData.light(
                   scheme: FlexScheme.bahamaBlue, useMaterial3: true),

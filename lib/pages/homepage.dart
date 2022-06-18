@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:global_snack_bar/global_snack_bar.dart';
 import 'package:http/http.dart' as http;
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:ceskyteletext/elements/teletext_page.dart' as elements;
 import 'package:ceskyteletext/elements/no_teletext_data.dart' as elements;
@@ -105,97 +104,88 @@ class _MyHomePageState extends State<MyHomePage> {
         title: widget.title,
         body: _connectionStatus == ConnectivityResult.none
             ? const element.NoInternetConnection()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                    FutureBuilder<List<model.TeletextPage>>(
-                        future: getTeletextPages(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<model.TeletextPage>> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
+            : FutureBuilder<List<model.TeletextPage>>(
+                future: getTeletextPages(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<model.TeletextPage>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                          if (!snapshot.hasData) {
-                            return const elements.NoTelextData();
-                          }
+                  if (!snapshot.hasData) {
+                    return const elements.NoTelextData();
+                  }
 
-                          if (snapshot.data == null) {
-                            return const elements.NoTelextData();
-                          }
+                  if (snapshot.data == null) {
+                    return const elements.NoTelextData();
+                  }
 
-                          List<model.TeletextPage> pages =
-                              snapshot.data as List<model.TeletextPage>;
+                  List<model.TeletextPage> pages =
+                      snapshot.data as List<model.TeletextPage>;
 
-                          return Consumer<model.AppState>(builder:
-                              (BuildContext context, model.AppState appstate,
-                                  Widget? child) {
-                            if (appstate.page.isEmpty) {
-                              return Container();
-                            }
+                  return Consumer<model.AppState>(builder:
+                      (BuildContext context, model.AppState appstate,
+                          Widget? child) {
+                    if (appstate.page.isEmpty) {
+                      return Container();
+                    }
 
-                            List<Widget> elementsToPaint = [];
+                    List<Widget> elementsToPaint = [];
 
-                            if (appstate.page.isNotEmpty) {
-                              page1 = int.parse(
-                                  appstate.page.toString().split('')[0]);
-                              page2 = int.parse(
-                                  appstate.page.toString().split('')[1]);
-                              page3 = int.parse(
-                                  appstate.page.toString().split('')[2]);
+                    if (appstate.page.isNotEmpty) {
+                      page1 = int.parse(appstate.page.toString().split('')[0]);
+                      page2 = int.parse(appstate.page.toString().split('')[1]);
+                      page3 = int.parse(appstate.page.toString().split('')[2]);
 
-                              String selectedPage = appstate.page;
+                      String selectedPage = appstate.page;
 
-                              model.TeletextPage teletextPage = pages
-                                  .firstWhere(
-                                      (element) => element.key == selectedPage,
-                                      orElse: () {
-                                return const model.TeletextPage(
-                                    key: '', subpages: []);
-                              });
+                      model.TeletextPage teletextPage = pages.firstWhere(
+                          (element) => element.key == selectedPage, orElse: () {
+                        return const model.TeletextPage(key: '', subpages: []);
+                      });
 
-                              if (teletextPage.subpages.isEmpty) {
-                                GlobalSnackBarBloc.showMessage(
-                                  GlobalMsg(
-                                      'Stránku $selectedPage jsme na teletextu nenašli.',
-                                      bgColor: Theme.of(context).errorColor),
-                                );
+                      if (teletextPage.subpages.isEmpty) {
+                        GlobalSnackBarBloc.showMessage(
+                          GlobalMsg(
+                              'Stránku $selectedPage jsme na teletextu nenašli.',
+                              bgColor: Theme.of(context).errorColor),
+                        );
 
-                                selectedPage = '100';
-                              }
+                        selectedPage = '100';
+                      }
 
-                              // if (teletextPage.subpages.isNotEmpty) {
-                              elementsToPaint.add(
-                                SizedBox(
-                                  height: 43.h,
-                                  // width: MediaQuery.of(context).size.width,
-                                  child: elements.TeletextPage(
-                                      teletextPages: pages,
-                                      selectedPage: selectedPage),
-                                ),
-                              );
+                      final fullHeight = MediaQuery.of(context).size.height;
+                      final appBarHeight =
+                          Scaffold.of(context).appBarMaxHeight! +
+                              MediaQuery.of(context).padding.top;
+                      final scaffoldBodyHeight =
+                          (fullHeight - appBarHeight) / 2;
 
-                              elementsToPaint.add(SizedBox(
-                                height: 43.h,
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      elements.SimpleKeyboard(
-                                          teletextPages: pages,
-                                          selectedPage: selectedPage)
-                                    ]),
-                              ));
-                            }
+                      elementsToPaint.add(SizedBox(
+                        height: scaffoldBodyHeight,
+                        child: elements.TeletextPage(
+                            teletextPages: pages, selectedPage: selectedPage),
+                      ));
 
-                            return Column(children: elementsToPaint);
-                          });
-                        })
-                  ]));
+                      elementsToPaint.add(Container(
+                        color: Colors.blue,
+                        child: SizedBox(
+                          height: scaffoldBodyHeight, // just make sure it is a bit smaller
+                          child: elements.SimpleKeyboard(
+                            teletextPages: pages,
+                            selectedPage: selectedPage,
+                            containerHeight: scaffoldBodyHeight
+                          ),
+                        ),
+                      ));
+                    }
+
+                    return Column(
+                      children: elementsToPaint,
+                    );
+                  });
+                }));
   }
 }

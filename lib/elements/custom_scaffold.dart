@@ -33,11 +33,15 @@ class CustomScaffold extends StatelessWidget {
             }
 
             return IconButton(
-              tooltip: 'smazat oblíbené',
+                tooltip: 'smazat oblíbené',
                 onPressed: () {
-                  Provider.of<model.AppState>(context, listen: false).removeAll();
+                  Provider.of<model.AppState>(context, listen: false)
+                      .removeAll();
                 },
-                icon: const Icon(Icons.delete_forever, semanticLabel: 'smazat oblíbené',));
+                icon: const Icon(
+                  Icons.delete_forever,
+                  semanticLabel: 'smazat oblíbené',
+                ));
           },
         ),
       );
@@ -64,20 +68,23 @@ class CustomScaffold extends StatelessWidget {
             }
 
             return IconButton(
-              tooltip: 'ukázat oblíbené',
+                tooltip: 'ukázat oblíbené',
                 onPressed: () {
                   Navigator.pushNamed(context, '/favorites');
                 },
-                icon: const Icon(Icons.favorite_outline, semanticLabel: 'oblíbené',));
+                icon: const Icon(
+                  Icons.favorite_outline,
+                  semanticLabel: 'oblíbené',
+                ));
           },
         ),
       );
     }
 
     return Scaffold(
-        backgroundColor: Colors.blue[50],
-        appBar:
-            AppBar(title: Text(title), centerTitle: false, actions: actions),
-        body: body);
+      backgroundColor: Colors.blue[50],
+      appBar: AppBar(title: Text(title), centerTitle: false, actions: actions),
+      body: body,
+    );
   }
 }

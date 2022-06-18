@@ -7,9 +7,13 @@ import 'package:provider/provider.dart';
 class SimpleKeyboard extends StatefulWidget {
   final List<model.TeletextPage> teletextPages;
   final String selectedPage;
+  final double containerHeight;
 
   const SimpleKeyboard(
-      {Key? key, required this.teletextPages, required this.selectedPage})
+      {Key? key,
+      required this.teletextPages,
+      required this.selectedPage,
+      required this.containerHeight})
       : super(key: key);
 
   @override
@@ -97,37 +101,36 @@ class _SimpleKeyboardState extends State<SimpleKeyboard> {
   }
 
   Widget button(int key) {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: ElevatedButton(
-          onPressed: () {
-            updateEntered(key: key);
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(18),
-          ),
-          child: Text(key.toString(), style: TextStyle(fontSize: 15.sp))),
+    return SizedBox(
+      width: widget.containerHeight / 5,
+      height: widget.containerHeight / 5,
+      child: Padding(
+        padding: const EdgeInsets.all(3),
+        child: ElevatedButton(
+            onPressed: () {
+              updateEntered(key: key);
+            },
+            child: Text(key.toString(), style: TextStyle(fontSize: 18.sp))),
+      ),
     );
   }
 
   Widget homeButton() {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: ElevatedButton(
-          onPressed: () {
-            Provider.of<model.AppState>(context, listen: false)
-                .updatePage(entered: '100');
-            setState(() {
-              entered = '100';
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(18),
-          ),
-          child: const Icon(Icons.home)),
-    );
+    return SizedBox(
+        width: widget.containerHeight / 5,
+        height: widget.containerHeight / 5,
+        child: Padding(
+          padding: const EdgeInsets.all(3),
+          child: ElevatedButton(
+              onPressed: () {
+                Provider.of<model.AppState>(context, listen: false)
+                    .updatePage(entered: '100');
+                setState(() {
+                  entered = '100';
+                });
+              },
+              child: Icon(Icons.home, size: 18.sp)),
+        ));
   }
 
   Widget favoritesButton() {
@@ -135,72 +138,73 @@ class _SimpleKeyboardState extends State<SimpleKeyboard> {
         Provider.of<model.AppState>(context, listen: false)
             .isFavorite(page: widget.selectedPage);
 
-    return Padding(
-        padding: const EdgeInsets.all(3),
-        child: FutureBuilder(
-            future: isSelected,
-            builder: ((BuildContext context, AsyncSnapshot<bool> snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return Container();
-              }
-
-              if (snapshot.hasError) {
-                return Container();
-              }
-
-              bool isSelected = snapshot.data as bool;
-
-              return ElevatedButton(
-                onPressed: () {
-                  if (isSelected) {
-                    Provider.of<model.AppState>(context, listen: false)
-                        .removeFavorite(selectedPage: widget.selectedPage);
-                  } else {
-                    _displayTextInputDialog(
-                        context: context, selectedPage: widget.selectedPage);
+    return SizedBox(
+        width: widget.containerHeight / 5,
+        height: widget.containerHeight / 5,
+        child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: FutureBuilder(
+                future: isSelected,
+                builder: ((BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return Container();
                   }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(18),
-                ),
-                child: Icon(
-                  isSelected ? Icons.favorite : Icons.favorite_outline,
-                  color: Colors.pink,
-                ),
-              );
-            })));
+
+                  if (snapshot.hasError) {
+                    return Container();
+                  }
+
+                  bool isSelected = snapshot.data as bool;
+
+                  return ElevatedButton(
+                    onPressed: () {
+                      if (isSelected) {
+                        Provider.of<model.AppState>(context, listen: false)
+                            .removeFavorite(selectedPage: widget.selectedPage);
+                      } else {
+                        _displayTextInputDialog(
+                            context: context,
+                            selectedPage: widget.selectedPage);
+                      }
+                    },
+                    child: Icon(
+                      isSelected ? Icons.favorite : Icons.favorite_outline,
+                      color: Colors.pink,
+                      size: 18.sp
+                    ),
+                  );
+                }))));
   }
 
   Widget changePageButton({int direction = 1}) {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: ElevatedButton(
-          onPressed: () {
-            model.TeletextPage nextTeletextPage =
-                const model.TeletextPage(key: '', subpages: []);
+    return SizedBox(
+        width: widget.containerHeight / 5,
+        height: widget.containerHeight / 5,
+        child: Padding(
+          padding: const EdgeInsets.all(3),
+          child: ElevatedButton(
+              onPressed: () {
+                model.TeletextPage nextTeletextPage =
+                    const model.TeletextPage(key: '', subpages: []);
 
-            for (int i = 0; i < widget.teletextPages.length; i++) {
-              if (widget.teletextPages[i].key == widget.selectedPage) {
-                try {
-                  nextTeletextPage = widget.teletextPages[i + direction];
-                } catch (_) {}
-                break;
-              }
-            }
+                for (int i = 0; i < widget.teletextPages.length; i++) {
+                  if (widget.teletextPages[i].key == widget.selectedPage) {
+                    try {
+                      nextTeletextPage = widget.teletextPages[i + direction];
+                    } catch (_) {}
+                    break;
+                  }
+                }
 
-            if (nextTeletextPage.key.isNotEmpty) {
-              Provider.of<model.AppState>(context, listen: false)
-                  .updatePage(entered: nextTeletextPage.key);
-              entered = nextTeletextPage.key;
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(18),
-          ),
-          child: Icon(direction == 1 ? Icons.arrow_forward : Icons.arrow_back)),
-    );
+                if (nextTeletextPage.key.isNotEmpty) {
+                  Provider.of<model.AppState>(context, listen: false)
+                      .updatePage(entered: nextTeletextPage.key);
+                  entered = nextTeletextPage.key;
+                }
+              },
+              child: Icon(
+                  direction == 1 ? Icons.arrow_forward : Icons.arrow_back, size: 18.sp)),
+        ));
   }
 
   @override
@@ -213,6 +217,7 @@ class _SimpleKeyboardState extends State<SimpleKeyboard> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
