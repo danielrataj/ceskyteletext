@@ -20,7 +20,7 @@ class TeletextPage {
 
     return TeletextPage(
       key: json.key,
-      subpages: json.value['subpages'] as List,
+      subpages: subpages,
     );
   }
 }

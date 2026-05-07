@@ -6,7 +6,7 @@ class AppState extends ChangeNotifier {
 
   final String defaultPage = '100';
   String teletextImageUrl =
-    'https://api-teletext.ceskatelevize.cz/services-old/teletext/picture.php?channel=CT2&page=%s';
+    'https://api-teletext.ceskatelevize.cz/pages/%s/image.webp';
   String page = '';
 
   Future <List<String>> get favorites async {

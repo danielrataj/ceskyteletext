@@ -35,27 +35,27 @@ class _TeletextPageState extends State<TeletextPage> {
     return CarouselSlider.builder(
         itemCount: teletextPage.subpages.length,
         itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
-          final Image image = Image.network(loadingBuilder:
-                  (BuildContext context, Widget child,
-                      ImageChunkEvent? loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            );
-          },
-              fit: BoxFit.fitWidth,
+          final Image image = Image.network(
               Provider.of<model.AppState>(context, listen: false)
                   .teletextImageUrl
                   .replaceFirst('%s',
-                      '${teletextPage.key}${teletextPage.subpages[itemIndex]}'));
+                      '${teletextPage.key}${teletextPage.subpages[itemIndex]}'),
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+              fit: BoxFit.fitWidth);
 
           List<Widget> itemsInColumn = [];
 

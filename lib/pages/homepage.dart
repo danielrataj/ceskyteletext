@@ -15,7 +15,7 @@ import 'package:ceskyteletext/model/teletext_page.dart' as model;
 import 'package:ceskyteletext/model/app_state.dart' as model;
 import 'package:provider/provider.dart';
 
-const String pagesUrl = 'https://api-teletext.ceskatelevize.cz/teletext-api/?t=0';
+const String pagesUrl = 'https://api-teletext.ceskatelevize.cz/pages';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
