@@ -24,3 +24,9 @@ V případě, že chcete aplikaci upravit, další informace najdete na [stránc
 ### Ochrana osobních údajů
 
 Více o tom, jak nakládáme s [osobními údaji](/docs/privacy-policy.md).
+
+### Kontakty
+
+- Autor: Daniel Rataj
+- E-mail: daniel.rataj@centrum.cz
+- Zdroj: Česká televize
